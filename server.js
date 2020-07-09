@@ -5,16 +5,11 @@ var express    = require('express');
 var app        = express();                 
 var mongoose   = require('mongoose');
 
-var mongoURL = null;
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080;
 var ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
 
-// if OPENSHIFT env variables are present, use the available connection info:
-if (process.env.OPENSHIFT_MONGODB_DB_URL) {
-    url = process.env.OPENSHIFT_MONGODB_DB_URL +
-    process.env.OPENSHIFT_APP_NAME;
-}
+
 
 if (local){
 	ip='127.0.0.1';
@@ -22,7 +17,8 @@ if (local){
 	url = 'mongodb://localhost/playground';
 }
 
-if (mongoURL == null) {
+
+if (!local) {
   var mongoHost, mongoPort, mongoDatabase, mongoPassword, mongoUser;
   // If using plane old env vars via service discovery
   if (process.env.DATABASE_SERVICE_NAME) {
@@ -34,8 +30,8 @@ if (mongoURL == null) {
     mongoUser = process.env[mongoServiceName + '_USER'];
 
   // If using env vars from secret from service binding  
-  } else if (process.env.database_name) {
-    mongoDatabase = process.env.database_name;
+  } else if (process.env.DATABASE_NAME) {
+    mongoDatabase = process.env.DATABASE_NAME;
     mongoPassword = process.env.password;
     mongoUser = process.env.username;
     var mongoUriParts = process.env.uri && process.env.uri.split("//");
@@ -57,13 +53,9 @@ if (mongoURL == null) {
     mongoURLLabel += mongoHost + ':' + mongoPort + '/' + mongoDatabase;
     mongoURL += mongoHost + ':' +  mongoPort + '/' + mongoDatabase;
   }
+  url = mongoURL;
 }
 
-if (!local){
-	url = mongoURL;
-	url = process.env.OPENSHIFT_MONGODB_DB_URL + 'playground';
-
-}
 
 // Connect to mongodb
 var connect = function () {
