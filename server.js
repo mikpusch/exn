@@ -5,13 +5,10 @@ var express    = require('express');
 var app        = express();                 
 var mongoose   = require('mongoose');
 
-var url = '127.0.0.1:27017/' + process.env.OPENSHIFT_APP_NAME;
 var mongoURL = null;
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080;
 var ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
-
-
 
 // if OPENSHIFT env variables are present, use the available connection info:
 if (process.env.OPENSHIFT_MONGODB_DB_URL) {
@@ -24,6 +21,7 @@ if (local){
 	port = 3000;
 	url = 'mongodb://localhost/playground';
 }
+
 if (mongoURL == null) {
   var mongoHost, mongoPort, mongoDatabase, mongoPassword, mongoUser;
   // If using plane old env vars via service discovery
@@ -67,8 +65,10 @@ if (!local){
 
 // Connect to mongodb
 var connect = function () {
-    mongoose.connect(url);
+    mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true});
+	
 };
+
 connect();
 
 var db = mongoose.connection;
