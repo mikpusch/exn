@@ -1,4 +1,4 @@
-var local = false;
+var local = true;
 
 // call the packages we need
 var express    = require('express');        
@@ -61,11 +61,14 @@ if (mongoURL == null) {
 
 if (!local){
 	url = mongoURL;
+	url = process.env.OPENSHIFT_MONGODB_DB_URL + 'playground';
+
 }
 
 // Connect to mongodb
 var connect = function () {
-    mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true});
+   mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true});
+
 	
 };
 
