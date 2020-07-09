@@ -88,6 +88,33 @@ var initDb = function(callback) {
   });
 };
 
+//initDb(function(err){});
+if (!db){
+	console.log("could not init db");
+}
+
+
+console.log('MONGOURL:' + mongoURL);
+
+// Connect to mongodb
+var connectMongoose = function () {
+	if (local){	
+		mongoose.connect(mongoURL, {useNewUrlParser: true, useUnifiedTopology: true});
+	}
+	else{
+		mongoose.connect(mongoURL, {useNewUrlParser: true, useUnifiedTopology: true});
+	}
+};
+
+connectMongoose();
+var dbMongoose = mongoose.connection;
+
+dbMongoose.on('error', function(error){
+		console.log("Error loading the db - "+ error);
+});
+
+
+
 app.get('/', function (req, res) {
   // try to initialize the db on every request if it's not already
   // initialized.
