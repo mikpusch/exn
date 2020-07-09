@@ -6,6 +6,7 @@ var app        = express();
 var mongoose   = require('mongoose');
 
 var url = '127.0.0.1:27017/' + process.env.OPENSHIFT_APP_NAME;
+var mongoURL = null;
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080;
 var ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
